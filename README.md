@@ -4,12 +4,21 @@ MorseGen is a small SDL2-based program that repeatedly sends a fixed Morse code 
 
 ## Build
 
+Before building, run the `configure` script to verify that all required
+dependencies are installed:
+
+```bash
+./configure
+```
+
 ### Linux
+
 ```bash
 make
 ```
 
 ### Windows
+
 ```bash
 make -f Makefile.win
 ```

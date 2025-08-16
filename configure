@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# Simple configure script to verify build dependencies for MorseGen
+
+missing=0
+
+check_command() {
+    local cmd="$1"
+    local install_hint="$2"
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo "Found $cmd: $(command -v $cmd)"
+    else
+        echo "Missing required command: $cmd"
+        if [ -n "$install_hint" ]; then
+            echo "  Install hint: $install_hint"
+        fi
+        missing=1
+    fi
+}
+
+check_pkg() {
+    local pkg="$1"
+    local install_hint="$2"
+    if pkg-config --exists "$pkg"; then
+        echo "Found $pkg: $(pkg-config --modversion $pkg)"
+    else
+        echo "Missing required library: $pkg"
+        if [ -n "$install_hint" ]; then
+            echo "  Install hint: $install_hint"
+        fi
+        missing=1
+    fi
+}
+
+check_command gcc "install GCC (e.g., sudo apt-get install build-essential)"
+check_command sdl2-config "install SDL2 development libraries (e.g., sudo apt-get install libsdl2-dev)"
+check_command pkg-config "install pkg-config (e.g., sudo apt-get install pkg-config)"
+
+if command -v pkg-config >/dev/null 2>&1; then
+    check_pkg SDL2_ttf "install SDL2_ttf development libraries (e.g., sudo apt-get install libsdl2-ttf-dev)"
+    check_pkg fftw3 "install FFTW3 development libraries (e.g., sudo apt-get install libfftw3-dev)"
+else
+    echo "pkg-config not found; skipping library checks"
+fi
+
+if [ "$missing" -ne 0 ]; then
+    echo
+    echo "Some dependencies are missing. Please install them and run this script again."
+    exit 1
+else
+    echo
+    echo "All dependencies are present. You can now run 'make' to build MorseGen."
+fi
