@@ -1,0 +1,23 @@
+name: C Pool Game CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install SDL2 and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
+
+      - name: Build the project
+        run: make
